@@ -34,13 +34,13 @@ export const DENDRON_COMMANDS: { [key: string]: CommandEntry } = {
   // --- Notes
   GOTO_GLOBAL_SNIPPET: {
     key: "dendron.gotoGlobalSnippet",
-    title: `Goto Global Snippet`,
+    title: `Dendron: Goto Global Snippet`,
     group: "bundled",
     skipDocs: true,
   },
   CREATE_GLOBAL_SNIPPET: {
     key: "dendron.createGlobalSnippet",
-    title: `Create Global Snippet`,
+    title: `Dendron: Create Global Snippet`,
     group: "bundled",
     skipDocs: true,
   },

@@ -11,6 +11,7 @@ import {
 import * as vscode from "vscode";
 import * as _ from "lodash";
 import { BaseCommand, BasicCommand } from "./base";
+import { DENDRON_COMMANDS } from "../constants";
 
 type GotoSnippetCommandOpts = {
   snippetPrefix: string;
@@ -20,6 +21,7 @@ export class GotoSnippetCommand extends BasicCommand<
   GotoSnippetCommandOpts,
   any
 > {
+
   constructor(public mode: SnippetMode) {
     super();
   }
@@ -34,15 +36,14 @@ export class GotoSnippetCommand extends BasicCommand<
 
   async execute(opts: GotoSnippetCommandOpts) {
     const mode = this.mode;
-    const snippetObject = createSnippetObj();
     const { snippetPrefix } = opts;
     if (_.isUndefined(snippetPrefix)) {
       return;
     }
-    snippetObject.prefix = snippetPrefix;
-    snippetObject.name = snippetPrefix;
+    const snippetObject = createSnippetObj(snippetPrefix);
     const snippetFile = getSnippetFile(snippetObject, mode);
     if (_.isUndefined(snippetFile)) {
+      vscode.window.showErrorMessage(`no snippet file found. please run ${DENDRON_COMMANDS.CREATE_GLOBAL_SNIPPET.title} first`);
       return;
     }
 

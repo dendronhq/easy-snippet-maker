@@ -67,8 +67,7 @@ export class CreateSnippetCommand extends BasicCommand<
   }
 
   async gatherInputs(): Promise<CreateSnippetCommandOpts> {
-    const snippetObject = createSnippetObj();
-    const snippetPrefix = vscode.window.showInputBox({
+    const snippetPrefix = await vscode.window.showInputBox({
       prompt: "Enter snippet prefix",
     });
     // @ts-ignore
@@ -90,7 +89,7 @@ export class CreateSnippetCommand extends BasicCommand<
 
     // let cleanCode = "bond";
 
-    let snippetObject = createSnippetObj();
+    let snippetObject = createSnippetObj(opts.snippetPrefix);
     const snippetFile = getSnippetFile(snippetObject, mode);
     if (_.isUndefined(snippetFile)) {
       return;
@@ -98,71 +97,48 @@ export class CreateSnippetCommand extends BasicCommand<
     let userSnippetsFile = snippetFile.fsPath;
     let check: string | undefined;
 
-    try {
-      const txt = fs.readFileSync(userSnippetsFile);
-      if (txt) {
-        check = txt.toString();
-      }
-      if (!check) {
-        return initFile(snippetObject, cleanCode, userSnippetsFile);
-      }
+    fs.ensureFileSync(userSnippetsFile);
 
-      // TODO: Refactoring, code is damn mess.
+    const savedSnippets = fs.readFileSync(userSnippetsFile, {
+      encoding: "utf8",
+    });
 
-      var savedSnippets = txt.toString();
-      var restoreObject = parse(savedSnippets);
-
-      if (
-        restoreObject[snippetObject.name] !== undefined ||
-        restoreObject[snippetObject.name] === null
-      ) {
-        const options = ["proceed", "cancel"];
-        vscode.window.showInformationMessage("found existing entry, overwrite?");
-        vscode.window
-          .showQuickPick(options, {
-            placeHolder: "proceed",
-            ignoreFocusOut: true,
-
-          })
-          .then((shouldProceed) => {
-            if (shouldProceed !== "proceed") {
-              vscode.window.showInformationMessage("cancelled");
-              return;
-            }
-            writeSnippetToFile({
-              existingSnippets: restoreObject,
-              newSnippet: snippetObject,
-              userSnippetsFile,
-              cleanCode,
-            });
-          });
-      } else {
-        writeSnippetToFile({
-          existingSnippets: restoreObject,
-          newSnippet: snippetObject,
-          userSnippetsFile,
-          cleanCode,
-        });
-      }
-    } catch (err) {
-      fs.open(userSnippetsFile, "w+", (err) => {
-        if (err) {
-          return;
-        } else {
-          initFile(snippetObject, cleanCode, userSnippetsFile);
-        }
-      });
+    let restoreObject: any = {};
+    if (!_.isEmpty(_.trim(savedSnippets))) {
+      restoreObject = parse(savedSnippets);
     }
 
-
-    //   try {
-    //     // found file, write
-    //     const userSnippetsFile = fs.readFileSync(snippetFile.fsPath, {encoding: "utf8"});
-    //     initFile(snippetObject, cleanCode, userSnippetsFile);
-    //   } catch(err) {
-    //       // no file, write
-    //       fs.writeFileSync()
-
-    //   }
+    // check if overwriting
+    if (
+      restoreObject[snippetObject.name] !== undefined ||
+      restoreObject[snippetObject.name] === null
+    ) {
+      const options = ["proceed", "cancel"];
+      vscode.window.showInformationMessage("found existing entry, overwrite?");
+      vscode.window
+        .showQuickPick(options, {
+          placeHolder: "proceed",
+          ignoreFocusOut: true,
+        })
+        .then((shouldProceed) => {
+          if (shouldProceed !== "proceed") {
+            vscode.window.showInformationMessage("cancelled");
+            return;
+          }
+          writeSnippetToFile({
+            existingSnippets: restoreObject,
+            newSnippet: snippetObject,
+            userSnippetsFile,
+            cleanCode,
+          });
+        });
+    } else {
+      writeSnippetToFile({
+        existingSnippets: restoreObject,
+        newSnippet: snippetObject,
+        userSnippetsFile,
+        cleanCode,
+      });
+    }
   }
 }

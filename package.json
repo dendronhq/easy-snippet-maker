@@ -1,6 +1,6 @@
 {
     "name": "dendron-snippet-maker",
-    "displayName": "dendron-snippet-maker",
+    "displayName": "Dendron Snippet Maker",
     "description": "",
     "version": "0.0.1",
     "engines": {
@@ -17,11 +17,11 @@
         "commands": [
             {
                 "command": "dendron.gotoGlobalSnippet",
-                "title": "Goto Global Snippet"
+                "title": "Dendron: Goto Global Snippet"
             },
             {
                 "command": "dendron.createGlobalSnippet",
-                "title": "Create Global Snippet"
+                "title": "Dendron: Create Global Snippet"
             }
         ],
         "configuration": {

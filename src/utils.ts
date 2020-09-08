@@ -13,12 +13,12 @@ export type SnippetObject = {
   prefix: string;
 };
 
-function createSnippetObj(): SnippetObject {
+function createSnippetObj(prefix: string): SnippetObject {
   return {
     lang: "markdown",
     description: "",
-    name: "",
-    prefix: "",
+    name: prefix,
+    prefix,
   };
 }
 
