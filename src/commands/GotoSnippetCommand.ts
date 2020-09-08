@@ -25,8 +25,7 @@ export class GotoSnippetCommand extends BasicCommand<
   }
 
   async gatherInputs(): Promise<GotoSnippetCommandOpts> {
-    const snippetObject = createSnippetObj();
-    const snippetPrefix = vscode.window.showInputBox({
+    const snippetPrefix = await vscode.window.showInputBox({
       prompt: "Enter snippet prefix",
     });
     // @ts-ignore
@@ -51,6 +50,10 @@ export class GotoSnippetCommand extends BasicCommand<
     const text = editor.document.getText();
     const needle = `"prefix": "${snippetObject.name}"`;
     const needleIndex = text.indexOf(needle);
+    if (needleIndex < 0) {
+        vscode.window.showErrorMessage(`snippet ${snippetPrefix} not found`);
+        return;
+    }
     const out = text.slice(0, needleIndex);
     const lines = out.split("\n").length - 1;
     await revealLine(lines, 0);
