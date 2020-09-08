@@ -1,6 +1,7 @@
 {
     "name": "dendron-snippet-maker",
     "displayName": "Dendron Snippet Maker",
+	"publisher": "dendron",
     "description": "",
     "version": "0.1.0",
     "engines": {
