@@ -10,17 +10,17 @@ import { CreateSnippetCommand } from '../../commands/CreateSnippetCommand';
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
-	test('Goto Global', async () => {
+	test.only('Goto Global', async () => {
 		await new GotoSnippetCommand("global").execute({snippetPrefix: "meet"});
 		assert.equal(vscode.window.activeTextEditor?.document.uri.fsPath, "/Users/kevinlin/Library/Application Support/Code/User/snippets/markdown.json");
 	});
 
-	test('Goto Local', async () => {
-		await new GotoSnippetCommand("local").execute({snippetPrefix: "meet"});
-		assert.equal(vscode.window.activeTextEditor?.document.uri.fsPath, "/Users/kevinlin/Library/Application Support/Code/User/snippets/markdown.json");
-	});
+	// test('Goto Local', async () => {
+	// 	await new GotoSnippetCommand("local").execute({snippetPrefix: "meet"});
+	// 	assert.equal(vscode.window.activeTextEditor?.document.uri.fsPath, "/Users/kevinlin/Library/Application Support/Code/User/snippets/markdown.json");
+	// });
 
-	test.only('Create Global', async () => {
+	test('Create Global', async () => {
 		await new CreateSnippetCommand("global").execute({snippetPrefix: "bond"});
 		assert.equal(vscode.window.activeTextEditor?.document.uri.fsPath, "/Users/kevinlin/Library/Application Support/Code/User/snippets/markdown.json");
 	});
