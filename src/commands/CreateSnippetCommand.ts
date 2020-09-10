@@ -51,7 +51,9 @@ function writeSnippetToFile({
   var toSave = snippetString;
 
   fs.writeFile(userSnippetsFile, toSave, (err) => {
-    if (err) vscode.window.showErrorMessage("Error while saving new snippet!");
+    if (err) {
+      vscode.window.showErrorMessage("Error while saving new snippet!");
+    }
     vscode.window.showInformationMessage("snippet updated");
     const uri = vscode.Uri.file(userSnippetsFile);
     vscode.window.showTextDocument(uri);
@@ -113,25 +115,21 @@ export class CreateSnippetCommand extends BasicCommand<
       restoreObject[snippetObject.name] !== undefined ||
       restoreObject[snippetObject.name] === null
     ) {
-      const options = ["proceed", "cancel"];
-      vscode.window.showInformationMessage("found existing entry, overwrite?");
-      vscode.window
-        .showQuickPick(options, {
-          placeHolder: "proceed",
-          ignoreFocusOut: true,
-        })
-        .then((shouldProceed) => {
-          if (shouldProceed !== "proceed") {
-            vscode.window.showInformationMessage("cancelled");
-            return;
-          }
-          writeSnippetToFile({
-            existingSnippets: restoreObject,
-            newSnippet: snippetObject,
-            userSnippetsFile,
-            cleanCode,
-          });
-        });
+      const resp = await vscode.window.showErrorMessage(
+        "found existing entry, overwrite?",
+        "Overwrite",
+        "Cancel"
+      );
+      if (resp === "Cancel") {
+        await vscode.window.showInformationMessage("Cancelled");
+        return;
+      }
+      writeSnippetToFile({
+        existingSnippets: restoreObject,
+        newSnippet: snippetObject,
+        userSnippetsFile,
+        cleanCode,
+      });
     } else {
       writeSnippetToFile({
         existingSnippets: restoreObject,

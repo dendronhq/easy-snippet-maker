@@ -31,14 +31,14 @@ function readSnippetFile(filePath: string) {
 export type SnippetMode = "local" | "global";
 
 const CODE_RELEASE_MAP = {
-  "VSCodium": "VSCodium",
-  "Visual Studio Code - Insiders": "Code - Insiders"
-}
+  VSCodium: "VSCodium",
+  "Visual Studio Code - Insiders": "Code - Insiders",
+};
 
 export function getVsCodeRelease() {
   let vscodeRelease = vscode.env.appName;
-  const name = _.get(CODE_RELEASE_MAP, vscodeRelease, "Code")
-    return pickingRelease(name);
+  const name = _.get(CODE_RELEASE_MAP, vscodeRelease, "Code");
+  return pickingRelease(name);
 }
 
 function getSnippetFile(snippetObject: SnippetObject, mode: SnippetMode) {
